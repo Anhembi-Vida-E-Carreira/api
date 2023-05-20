@@ -1,4 +1,5 @@
-export type FilterTypes = 'city' | 'district' | 'station'
+export type TimeFilter = 'lastWeek' | 'today' | 'lastMonth'
+export type FilterTypes = 'city' | 'district' | 'station' | TimeFilter
 
 export interface IFilter {
     id: string,
