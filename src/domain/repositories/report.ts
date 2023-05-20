@@ -1,9 +1,11 @@
+import { TimeFilter } from "../entities/filter";
 import { IReport } from "../entities/report";
 
 export interface IReportRepository {
-    create: (report: IReport) => Promise<void>
+    create: (report: Omit<IReport, 'id' | 'postDate'>) => Promise<IReport>
     getAll: () => Promise<IReport[]>
-    getByFilter: (filter: string) => Promise<IReport[]>
+    getByStation: (station: string) => Promise<IReport[]>
+    getByTimeFilter: (filter: TimeFilter) => Promise<IReport[]>
     updateRating: (reportId: string, newRating: number) => Promise<void>
     getByDescription: (description: string) => Promise<IReport>
 }
