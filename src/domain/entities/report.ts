@@ -1,6 +1,6 @@
 
 export interface IReport {
-    id: string,
+    id: number,
     title: string,
     description: string,
     city: string,

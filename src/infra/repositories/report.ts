@@ -34,7 +34,7 @@ export class ReportRepository implements IReportRepository{
         return this.toModel(data)
     }
 
-    async updateRating (reportId: string, newRating: number): Promise<void>{
+    async updateRating (reportId: number, newRating: number): Promise<void>{
         await this.database.execute(`update denuncia set rating = ${newRating} where idDenuncia = ${reportId}`)
     }
 

@@ -1,5 +1,5 @@
 export interface IPhoto {
-    id: string,
-    reportId: string,
+    id: number,
+    reportId: number,
     url: string
 }

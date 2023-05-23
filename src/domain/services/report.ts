@@ -23,7 +23,7 @@ export namespace ReportServiceDTO {
     }
 
     export type getReportsOutput = {
-        id: string,
+        id: number,
         description: string,
         title: string
         station: string,

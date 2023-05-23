@@ -1,6 +1,6 @@
 import { IPhoto } from "../entities/photo"
 
 export interface IPhotoRepository {
-    create: (base64: string, reportId: string) => Promise<void>
-    getByReport: (reportId: string) => Promise<string[]>
+    create: (base64: string, reportId: number) => Promise<void>
+    getByReport: (reportId: number) => Promise<string[]>
 }

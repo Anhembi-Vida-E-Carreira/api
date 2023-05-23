@@ -18,10 +18,6 @@ export class ReportService implements IReportService{
         const exists = await this.reportRepository.getByDescription(input.description)
         if (exists) throw new ApplicationError("This report already exists", 400)
 
-        const stationIsRegistered = await this.filterRepository.findByName(input.station)
-        
-        if (!stationIsRegistered) await this.filterRepository.create(input.station, 'station')
-
         const report = await this.reportRepository.create({...input, rating: 0})
 
         for (const image of input.images){
