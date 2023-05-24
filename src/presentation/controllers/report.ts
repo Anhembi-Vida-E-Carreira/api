@@ -7,7 +7,7 @@ export default class ReportController {
     ){}
 
     create (req: Request, res: Response): void {
-        const report = req.body
+        const {report} = req.body
         try {
             this.reportService.create(report)
             res.status(201)

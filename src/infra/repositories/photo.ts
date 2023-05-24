@@ -16,7 +16,7 @@ export class PhotoRepository implements IPhotoRepository{
     }
 
     async create (base64: string, reportId: number): Promise<void>{
-        const [data] = await this.database.execute(`
+        await this.database.execute(`
         insert into anexo (idDenuncia, anexo)
         values (${reportId}, '${base64}')
         `)

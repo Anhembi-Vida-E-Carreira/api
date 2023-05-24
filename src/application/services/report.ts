@@ -10,7 +10,6 @@ import { IReportService, ReportServiceDTO } from "../../domain/services/report";
 export class ReportService implements IReportService{
     constructor (
         private readonly reportRepository: IReportRepository,
-        private readonly filterRepository: IFilterRepository,
         private readonly photoRepository: IPhotoRepository
     ){}
 
