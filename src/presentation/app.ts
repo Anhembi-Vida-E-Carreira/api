@@ -1,16 +1,12 @@
 import dotenv from 'dotenv'
 import express from 'express'
-import { connect } from '../infra/db/connection'
 import cors from 'cors'
 import initRouter from './routes'
-
-
 
 const initApp = async () => {
 
     try {
         dotenv.config()
-
         const app = express()
         app.use(cors())
         app.use(express.json())
@@ -23,3 +19,5 @@ const initApp = async () => {
         console.error('Error initializing server ', err)
     }
 }
+
+initApp()

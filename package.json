@@ -4,7 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "dev": "ts-node-dev --inspect --ignore-watch node_modules src/presentation/app.ts",
+    "build": "tsc",
+    "start": "node dist/presentation/app.js"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
