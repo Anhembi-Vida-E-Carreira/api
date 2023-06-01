@@ -7,5 +7,5 @@ export interface IReportRepository {
     getByStation: (station: string) => Promise<IReport[]>
     getByTimeFilter: (filter: TimeFilter) => Promise<IReport[]>
     updateRating: (reportId: number, newRating: number) => Promise<void>
-    getByDescription: (description: string) => Promise<IReport>
+    getByDescription: (description: string) => Promise<IReport | undefined>
 }

@@ -13,7 +13,7 @@ export class ReportService implements IReportService{
 
     async create (input: ReportServiceDTO.createReportInput): Promise<void>{
         const exists = await this.reportRepository.getByDescription(input.description)
-        if (exists) throw new ApplicationError("This report already exists", 400)
+        if (exists) throw new ApplicationError("Essa denúncia já foi feita", 400)
 
         const report = await this.reportRepository.create({...input, rating: 0})
 
@@ -24,14 +24,13 @@ export class ReportService implements IReportService{
 
     async update (input: ReportServiceDTO.updateReportRatingInput): Promise<void>{
         const exists = await this.reportRepository.getByDescription(input.description)
-        if (!exists) throw new ApplicationError("This report doesn't exists", 400)
+        if (!exists) throw new ApplicationError("Essa denúncia não existe", 400)
         await this.reportRepository.updateRating(exists.id, exists.rating + 1)
     }
 
     async get (): Promise<ReportServiceDTO.getReportsOutput>{
         const reports = await this.reportRepository.getAll()
         const result = []
-        console.log(reports)
         if (reports.length){
         for (const report of reports){
             const images = await this.photoRepository.getByReport(report.id)

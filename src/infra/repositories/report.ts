@@ -25,10 +25,13 @@ export class ReportRepository implements IReportRepository{
     }
 
     async create (report: Omit<IReport, "id" | "postDate">): Promise<IReport>{
-        const [data] = await database.query(`
+        await database.query(`
         insert into denuncias (tituloDenuncia, bairro, cidade, estacao, descricao, votos)
-        values (${report.title}, ${report.district}, ${report.city}, ${report.station}, ${report.description}, ${report.rating})
+        values ('${report.title}', '${report.district}', '${report.city}', '${report.station}', '${report.description}', ${report.rating})
         `)
+
+        const [data] = await database.query(`select * from denuncias where descricao = '${report.description}'`)
+        console.log(data)
         return this.toModel(data)
     }
 
@@ -52,9 +55,9 @@ export class ReportRepository implements IReportRepository{
         return []
     }
 
-    async getByDescription (description: string): Promise<IReport>{
+    async getByDescription (description: string): Promise<IReport | undefined>{
         const [result] = await database.query(`select * from denuncias where descricao = '${description}'`)
-        return this.toModel(result)
+        if (result) return this.toModel(result)
     }
 
     async getByStation (station: string): Promise<IReport[]>{

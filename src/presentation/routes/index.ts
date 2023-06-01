@@ -9,8 +9,6 @@ const initRouter = async (app: Express) => {
         const reportController = new ReportController()
         const filterController = new FilterController()
 
-        console.log(reportController)
-
         router.post('/report', reportController.create)
         router.put('/report', reportController.update)
         router.get('/report', reportController.get)

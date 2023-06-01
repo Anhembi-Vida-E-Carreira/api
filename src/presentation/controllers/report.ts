@@ -13,29 +13,32 @@ const reportService = new ReportService(reportRepository, photoRepository)
 export default class ReportController {
     constructor (){}
 
-    create (req: Request, res: Response): void {
+    async create (req: Request, res: Response): Promise<void> {
         const {content} = req.body
+        console.log(content)
         try {
-            reportService.create(content)
+            await reportService.create(content)
             res.status(201)
         } catch (err) {
+            console.log(err)
             res.status(400).send(err)
         }
     }
 
-    update (req: Request, res: Response): void {
+    async update (req: Request, res: Response): Promise<void> {
         const {content} = req.body
         try {
-            reportService.update(content)
+            await reportService.update(content)
             res.status(200)
         } catch (err) {
             res.status(400).send(err)
         }
     }
 
-    get (req: Request, res: Response): void {
+    async get (req: Request, res: Response): Promise<void> {
         try {
-            const reports = reportService.get()
+            const reports = await reportService.get()
+            console.log(reports)
             res.status(200).send(reports)
         } catch (err) {
             console.log(reportService.get())
@@ -44,10 +47,10 @@ export default class ReportController {
         }
     }
 
-    getByFilter (req: Request, res: Response): void {
+    async getByFilter (req: Request, res: Response): Promise<void> {
         const {filters} = req.body
         try {
-            const reports = reportService.getByFilter(filters)
+            const reports = await reportService.getByFilter(filters)
             res.status(200).send(reports)
         } catch (err) {
             res.status(400).send(err)
