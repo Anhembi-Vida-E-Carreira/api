@@ -1,16 +1,14 @@
 import { TimeFilter } from "../../domain/entities/filter";
-import { IPhoto } from "../../domain/entities/photo";
 import { IReport } from "../../domain/entities/report";
 import { ApplicationError } from "../../domain/error/application";
-import { IFilterRepository } from "../../domain/repositories/filter";
-import { IPhotoRepository } from "../../domain/repositories/photo";
-import { IReportRepository } from "../../domain/repositories/report";
 import { IReportService, ReportServiceDTO } from "../../domain/services/report";
+import { PhotoRepository } from "../../infra/repositories/photo";
+import { ReportRepository } from "../../infra/repositories/report";
 
 export class ReportService implements IReportService{
     constructor (
-        private readonly reportRepository: IReportRepository,
-        private readonly photoRepository: IPhotoRepository
+        private readonly reportRepository: ReportRepository,
+        private readonly photoRepository: PhotoRepository
     ){}
 
     async create (input: ReportServiceDTO.createReportInput): Promise<void>{
@@ -33,10 +31,12 @@ export class ReportService implements IReportService{
     async get (): Promise<ReportServiceDTO.getReportsOutput>{
         const reports = await this.reportRepository.getAll()
         const result = []
+        console.log(reports)
+        if (reports.length){
         for (const report of reports){
             const images = await this.photoRepository.getByReport(report.id)
             result.push({...report, images})
-        }
+        }}
         return result
     }
 

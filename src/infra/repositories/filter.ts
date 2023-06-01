@@ -1,11 +1,9 @@
-import { Connection } from "mysql2/promise";
-import { FilterTypes, IFilter } from "../../domain/entities/filter";
+import { IFilter } from "../../domain/entities/filter";
 import { IFilterRepository } from "../../domain/repositories/filter";
+import { Database as database } from "../db/connection";
 
 export default class FilterRepository implements IFilterRepository {
-    constructor (
-        private readonly database: Connection
-    ){}
+    constructor (){}
 
     private toModel (data: any): IFilter {
         return {
@@ -16,9 +14,9 @@ export default class FilterRepository implements IFilterRepository {
     }
 
     async getAll (): Promise<IFilter[]>{
-        const data = await this.database.execute('select * from Filtros')
+        const data = await database.query('select * from filtros')
         const filtros : IFilter[]= []
-        data.forEach(filtro => {filtros.push(this.toModel(filtro))})
+        data.forEach((filtro: any) => {filtros.push(this.toModel(filtro))})
         return filtros
     }
 }

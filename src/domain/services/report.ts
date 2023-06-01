@@ -40,6 +40,7 @@ export namespace ReportServiceDTO {
     }
 
     export type getReportsByFilterOutput = {
+        id: number,
         description: string,
         station: string,
         title: string,

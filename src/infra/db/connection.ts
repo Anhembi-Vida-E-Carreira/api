@@ -1,19 +1,23 @@
 import dotenv from 'dotenv'
-import * as mysql from 'mysql2/promise'
+import { DataSource } from 'typeorm'
+import 'reflect-metadata'
 
 dotenv.config()
 
-export async function connect(){
-    try {
-        const connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME
-        })
-
-        return connection
-    } catch (err) {
-        console.log('Error connecting to Database: ', err)
-    }
+const connectDatabase = () => {
+    const datasource = new DataSource(
+        {
+            host: process.env.DB_HOST || '',
+            username: process.env.DB_USER || '',
+            password: process.env.DB_PASSWORD || '',
+            database: process.env.DB_NAME || '',
+            port: 3306,
+            type: 'mysql'
+        }
+    )
+    datasource.initialize().then(() => console.log('Connected to Database')).catch((err) => console.log(err))  
+    
+    return datasource
 }
+
+export const Database = connectDatabase()

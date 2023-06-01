@@ -1,19 +1,17 @@
-import { Connection } from "mysql2/promise";
 import { IReport } from "../../domain/entities/report";
 import { IReportRepository } from "../../domain/repositories/report";
 import { TimeFilter } from "../../domain/entities/filter";
+import { Database as database } from "../db/connection";
 
 
 export class ReportRepository implements IReportRepository{
-    constructor (
-        private readonly database: Connection
-    ){}
+    constructor (){}
     
     private toModel (data: any): IReport {
         return {
             id: data.idDenuncia,
-            title: data.title,
-            description: data.description,
+            title: data.tituloDenuncia,
+            description: data.descricao,
             district: data.bairro,
             city: data.cidade,
             postDate: data.dataHoraPostagem,
@@ -23,40 +21,46 @@ export class ReportRepository implements IReportRepository{
     }
 
     private async removeExpired (): Promise<void> {
-       await this.database.execute(`delete from denuncia where DATE(dataExpirar) >= CURDATE()`)
+       await database.query(`delete from denuncias where DATE(dataExpirar) >= CURDATE()`)
     }
 
     async create (report: Omit<IReport, "id" | "postDate">): Promise<IReport>{
-        const [data] = await this.database.execute(`
-        insert into denuncia (tituloDenuncia, bairro, cidade, estacao, descricao, votos)
+        const [data] = await database.query(`
+        insert into denuncias (tituloDenuncia, bairro, cidade, estacao, descricao, votos)
         values (${report.title}, ${report.district}, ${report.city}, ${report.station}, ${report.description}, ${report.rating})
         `)
         return this.toModel(data)
     }
 
     async updateRating (reportId: number, newRating: number): Promise<void>{
-        await this.database.execute(`update denuncia set rating = ${newRating} where idDenuncia = ${reportId}`)
+        await database.query(`update denuncias set rating = ${newRating} where idDenuncia = ${reportId}`)
     }
 
     async getAll (): Promise<IReport[]>{
         await this.removeExpired()
-        const data = await this.database.execute('select * from denuncia')
+        const data = await database.query('select * from denuncias')
+        if (data.length){
         const reports : IReport[] = []
-        data.forEach(report => {
-            reports.push(this.toModel(report))
+        data.forEach((report: any) => {
+            const modeled = this.toModel(report)
+            if (modeled.id) {
+                reports.push(modeled)
+            }
         })
         return reports
+        }
+        return []
     }
 
     async getByDescription (description: string): Promise<IReport>{
-        const [result] = await this.database.execute(`select * from denuncia where descricao = '${description}'`)
+        const [result] = await database.query(`select * from denuncias where descricao = '${description}'`)
         return this.toModel(result)
     }
 
     async getByStation (station: string): Promise<IReport[]>{
-        const data = await this.database.execute(`select * from denuncia where estacao = '${station}'`)
+        const data = await database.query(`select * from denuncias where estacao = '${station}'`)
         const reports: IReport[] = []
-        data.forEach(report => {
+        data.forEach((report: any) => {
             reports.push(this.toModel(report))
         })
         return reports
@@ -67,24 +71,24 @@ export class ReportRepository implements IReportRepository{
         let reports : IReport[] = []
         switch (filter){
             case 'today': 
-                data = await this.database.execute(`select * from denuncia where DATE(dataHoraPostagem) = CURDATE()`)
-                data.forEach(report => {
+                data = await database.query(`select * from denuncias where DATE(dataHoraPostagem) = CURDATE()`)
+                data.forEach((report: any) => {
                     reports.push(this.toModel(report))
                 })
                 return reports
             case "lastWeek":
-                data = await this.database.execute(`
-                select * from denuncia where DATE(dataHoraPostagem) >= CURDATE() - INTERVAL 1 WEEK
+                data = await database.query(`
+                select * from denuncias where DATE(dataHoraPostagem) >= CURDATE() - INTERVAL 1 WEEK
                 and DATE(dataHoraPostagem) <= CURDATE()`)
-                data.forEach(report => {
+                data.forEach((report: any) => {
                     reports.push(this.toModel(report))
                 })
                 return reports
             default: 
-                data = await this.database.execute(`
-                select * from denuncia where DATE(dataHoraPostagem) >= CURDATE() - INTERVAL 2 WEEK
+                data = await database.query(`
+                select * from denuncias where DATE(dataHoraPostagem) >= CURDATE() - INTERVAL 2 WEEK
                 and DATE(dataHoraPostagem) <= CURDATE()`)
-                data.forEach(report => {
+                data.forEach((report: any) => {
                     reports.push(this.toModel(report))
                 })
                 return reports 
