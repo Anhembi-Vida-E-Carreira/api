@@ -2,19 +2,23 @@ import { IReport } from "../../domain/entities/report";
 import { IReportRepository } from "../../domain/repositories/report";
 import { TimeFilter } from "../../domain/entities/filter";
 import { Database as database } from "../db/connection";
+import formatDate from "../utils/formatDate";
 
 
 export class ReportRepository implements IReportRepository{
     constructor (){}
     
     private toModel (data: any): IReport {
+
+        const postDate = formatDate(data.dataHoraPostagem)
+
         return {
             id: data.idDenuncia,
             title: data.tituloDenuncia,
             description: data.descricao,
             district: data.bairro,
             city: data.cidade,
-            postDate: data.dataHoraPostagem,
+            postDate,
             rating: data.votos,
             station: data.estacao
         }
@@ -40,8 +44,8 @@ export class ReportRepository implements IReportRepository{
     }
 
     async getAll (): Promise<IReport[]>{
-        await this.removeExpired()
         const data = await database.query('select * from denuncias')
+        console.log(data)
         if (data.length){
         const reports : IReport[] = []
         data.forEach((report: any) => {

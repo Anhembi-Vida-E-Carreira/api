@@ -19,9 +19,9 @@ export default class ReportController {
         try {
             await reportService.create(content)
             res.status(201)
-        } catch (err) {
+        } catch (err: any) {
             console.log(err)
-            res.status(400).send(err)
+            res.status(400).send(err.message)
         }
     }
 
@@ -52,8 +52,8 @@ export default class ReportController {
         try {
             const reports = await reportService.getByFilter(filters)
             res.status(200).send(reports)
-        } catch (err) {
-            res.status(400).send(err)
+        } catch (err: any) {
+            res.status(400).send(err.message)
         }
     }
 }
